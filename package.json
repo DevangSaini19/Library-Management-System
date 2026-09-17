@@ -1,15 +1,43 @@
 {
   "name": "library-management-system",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "prepare": "husky install"
+  "description": "MEAN-stack library management app: Express + MongoDB API with an Angular client.",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
   },
-  "keywords": [],
+  "scripts": {
+    "prepare": "husky install",
+    "setup": "npm run install:all && node scripts/setup-env.mjs",
+    "install:all": "npm install && npm --prefix server install && npm --prefix client install",
+    "dev": "concurrently -k -n api,web -c blue,green \"npm --prefix server run start\" \"npm --prefix client run start\"",
+    "start": "npm run dev",
+    "dev:server": "npm --prefix server run start",
+    "dev:client": "npm --prefix client run start",
+    "build": "npm --prefix server run build && npm --prefix client run build",
+    "lint": "npm --prefix server run lint",
+    "test": "npm --prefix server test",
+    "db:start": "docker compose up -d mongodb",
+    "db:stop": "docker compose stop mongodb",
+    "db:down": "docker compose down",
+    "db:reset": "docker compose down -v",
+    "db:seed": "node scripts/seed.mjs",
+    "db:logs": "docker compose logs -f mongodb",
+    "debug:server": "npm --prefix server run debug"
+  },
+  "keywords": [
+    "mongodb",
+    "express",
+    "angular",
+    "node",
+    "mean-stack"
+  ],
   "author": "",
-  "license": "ISC",
+  "license": "Apache-2.0",
   "devDependencies": {
-    "husky": "^8.0.0"
+    "concurrently": "^9.2.1",
+    "husky": "^8.0.0",
+    "mongodb": "^7.1.0"
   }
 }

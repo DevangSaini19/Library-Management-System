@@ -1,17 +1,22 @@
 {
-    "compilerOptions": {
-      "skipLibCheck": true,
-      "target": "esnext",
-      "module": "esnext",
-      "moduleResolution": "node",
-      "allowJs": true,
-      "resolveJsonModule": true,
-      "esModuleInterop": true,
-      "outDir": "./dist",
-      "rootDir": "src",
-      "incremental": true,
-      "tsBuildInfoFile": ".tsbuildinfo"
-    },
-    "include": ["src/**/*"],
-    "exclude": ["node_modules"]
-  }
+  "compilerOptions": {
+    "skipLibCheck": true,
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "allowJs": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "outDir": "./dist",
+    "rootDir": "src",
+    "incremental": true,
+    "tsBuildInfoFile": ".tsbuildinfo",
+    "sourceMap": true
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

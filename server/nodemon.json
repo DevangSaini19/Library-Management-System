@@ -1,5 +1,9 @@
 {
-  "watch": ["./src/**/*.ts", "./.env"],
-  "ext": "ts,js,mjs,json",
-  "exec": "npm run start:prod"
+  "watch": [
+    "./dist/**/*.js",
+    "./.env"
+  ],
+  "ext": "js,json,mjs",
+  "delay": 500,
+  "exec": "node dist/server.js"
 }

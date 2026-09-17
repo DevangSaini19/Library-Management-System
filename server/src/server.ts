@@ -13,8 +13,25 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
 
-await connectToDatabase(process.env.DATABASE_URI);
-console.log('Connected to database!');
+try {
+    await connectToDatabase(process.env.DATABASE_URI);
+    console.log('Connected to database!');
+} catch (error) {
+    const uri = (process.env.DATABASE_URI ?? '').replace(/\/\/[^@/]+@/, '//***:***@');
+    const reason = error instanceof Error ? error.message : String(error);
+
+    console.error(`
+    Unable to connect to MongoDB${uri ? ` at ${uri}` : ''}.
+
+      • Local database not running?   npm run db:start && npm run db:seed
+      • Using a local mongod?         check the host and port in server/.env
+      • Using Atlas?                  check DATABASE_URI, the IP allowlist, the credentials
+      • Wrong database name?          DATABASE_NAME in server/.env (sample data: "library")
+
+    ${reason}
+`);
+    process.exit(1);
+}
 
 app.get('/', (_, res) => res.sendStatus(200));
 
