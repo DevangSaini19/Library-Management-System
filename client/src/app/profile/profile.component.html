@@ -1,0 +1,22 @@
+<div class="title-wrapper">
+    <h2>{{ user.name }}</h2>
+    <h3>{{ user.isAdmin ? 'Librarian' : 'Reader' }}</h3>
+</div>
+
+<mat-card class="user-card">
+    <mat-card-content class="user-card-content">
+        <h4>Contact information</h4>
+        <div class="user-additional-details">
+            <div *ngIf="user.email">
+                <span>Email</span>
+                <span>{{ user.email }}</span>
+            </div>
+
+            <div *ngIf="user.email">
+                <span>Address</span>
+                <span>{{ user.address }}</span>
+            </div>
+
+        </div>
+    </mat-card-content>
+</mat-card>
