@@ -1,0 +1,49 @@
+{
+  // Debugging for the whole MEAN stack. Pick one from the Run and Debug view (Ctrl+Shift+D):
+  //  • "Full stack: API + Client"  -> the usual dev loop (both npm scripts in integrated terminals)
+  //  • "API: debug (inspect)"      -> real breakpoints in server/src/*.ts
+  // Requires MongoDB to be reachable (npm run db:start && npm run db:seed).
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "API: watch (server)",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "npm run dev:server",
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "name": "Client: ng serve",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "npm run dev:client",
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "name": "API: debug (inspect)",
+      "type": "node",
+      "request": "attach",
+      "port": 9229,
+      "restart": true,
+      "sourceMaps": true,
+      "outFiles": ["${workspaceFolder}/server/dist/**/*.js"],
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "name": "Open app in Chrome",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:4200",
+      "webRoot": "${workspaceFolder}/client",
+      "sourceMaps": true,
+      "timeout": 120000
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Full stack: API + Client",
+      "configurations": ["API: watch (server)", "Client: ng serve"],
+      "stopAll": true
+    }
+  ]
+}

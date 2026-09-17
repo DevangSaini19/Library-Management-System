@@ -2,6 +2,12 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.1.6.
 
+> **This is only half the app.** Start the Express API first (or use the repo-root
+> scripts — `npm run setup`, `npm run db:start`, `npm run db:seed`, `npm run dev`), see the
+> [root README](../README.md). `npm start` here runs `ng serve --host 0.0.0.0 --disable-host-check`
+> and proxies `/api` to `http://localhost:5400` (see `proxy.conf.json`), so keep the server's
+> `PORT` in sync if you change it. Needs Node.js 20+ (Angular 16).
+
 ## Development server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.

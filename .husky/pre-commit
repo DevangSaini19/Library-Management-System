@@ -1,8 +1,25 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-(cd .devcontainer && docker compose up) &
-sleep 5
-(cd server && npm run lint)
-(cd server && npm test)
+# Run from the repo root regardless of where `git commit` was invoked from.
+cd "$(dirname -- "$0")/.." || exit 1
 
+# The API tests need a reachable MongoDB. In Codespaces / the dev container one is
+# already running; elsewhere we start it with Docker. If that isn't available we still
+# lint, but we don't block the commit on tests that cannot run — start the database with
+# `npm run db:start` and run them yourself with `npm test` (see README).
+if ! command -v docker >/dev/null 2>&1 || ! docker compose up -d mongodb >/dev/null 2>&1; then
+	echo "pre-commit: no MongoDB via Docker — running lint only. Run 'npm test' in server/ manually."
+	cd server && exec npm run lint
+fi
+
+# Give MongoDB a moment to accept connections (up to ~30s on a cold start).
+for _ in $(seq 1 15); do
+	if docker compose exec -T mongodb mongosh --quiet --eval 'db.adminCommand({ ping: 1 }).ok' >/dev/null 2>&1; then
+		break
+	fi
+	sleep 2
+done
+
+(cd server && npm run lint) || exit 1
+(cd server && npm test) || exit 1

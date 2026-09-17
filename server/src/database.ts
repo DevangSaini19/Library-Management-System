@@ -32,7 +32,12 @@ export async function connectToDatabase(uri?: string) {
     `);
     }
 
-    const client = new mongodb.MongoClient(uri, { appName: 'devrel-workshop-node-angular-library' });
+    // A short server-selection timeout keeps a missing local database from stalling startup
+    // (the driver default is 30s of silent retry before the error surfaces).
+    const client = new mongodb.MongoClient(uri, {
+        appName: 'devrel-workshop-node-angular-library',
+        serverSelectionTimeoutMS: 10000
+    });
     await client.connect();
 
     const db = client.db(process.env.DATABASE_NAME);

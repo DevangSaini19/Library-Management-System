@@ -9,7 +9,15 @@ MongoDB Atlas; the client (`client/`) is an Angular SPA that consumes it.
 ## Build and test commands
 
 ```bash
-npm install                       # root: installs husky for the pre-commit hook
+npm run setup                     # root: installs root + server + client deps and creates server/.env
+npm run db:start                  # local MongoDB 8 in Docker (docker compose up -d mongodb)
+npm run db:seed                   # load .devcontainer/data/library/*.bson into DATABASE_NAME
+npm run dev                       # server (5400) + Angular dev server (4200) together
+npm run build                     # tsc + ng build
+npm run lint                      # eslint over server/src
+npm test                          # server API tests (needs a reachable MongoDB)
+
+npm install                       # root only: husky for the pre-commit hook
 cd server && npm install          # server dependencies
 cd client && npm install          # client dependencies
 
@@ -25,10 +33,10 @@ cd client && npm run build        # ng build
 cd client && npm test             # ng test (Karma)
 ```
 
-The pre-commit hook (`.husky/pre-commit`) brings up `.devcontainer/docker-compose.yml`
-(a local MongoDB Atlas Local container) in the background, then runs `npm run lint`
-and `npm test` inside `server/`. Docker must be running locally for `git commit` to
-succeed outside of Codespaces/the devcontainer.
+The pre-commit hook (`.husky/pre-commit`) starts the `mongodb` service from the root
+`docker-compose.yml` (a local MongoDB), then runs `npm run lint` and `npm test` inside
+`server/`. When Docker is not installed the hook only lints, so `git commit` still works
+outside of Codespaces/the devcontainer; `git commit --no-verify` skips it entirely.
 
 Smoke check after a change:
 
@@ -53,6 +61,11 @@ server/src/
                          # Vector Search indexes on the books collection (workshop labs)
   indexing/             # Standalone script demonstrating a compound index via .explain()
 client/src/app/         # Angular components, services, routing
+scripts/                # Root-level dev tooling: setup-env.mjs (creates server/.env from the
+                        # template) and seed.mjs (imports the sample .bson dump with the Node
+                        # driver only — no MongoDB Database Tools required). Exposed as
+                        # `npm run setup` / `npm run db:seed`.
+docker-compose.yml      # Local MongoDB for development (`npm run db:start` / `db:stop`)
 migrations/             # One-off data migration scripts (run manually with Node)
 .devcontainer/          # Codespaces/Dev Containers setup: local Atlas container,
                          # sample data import, port forwarding, best-effort
@@ -113,9 +126,13 @@ Notable files:
 | `PROJECT_ID` / `PROJECT_LOCATION` | No | — | Google Cloud project/location, used only when `EMBEDDINGS_SOURCE=googleVertex` |
 | `GOOGLE_APPLICATION_CREDENTIALS` | No | — | Falls back to `EMBEDDING_KEY` if unset and `EMBEDDING_KEY` is present (`googleVertex.ts`) |
 
-`server/.env` is committed to this repository with working local-dev defaults (it
-targets the devcontainer's local Atlas Local instance, not a real cluster) — this is
-intentional for the workshop, not a leaked credential.
+`server/.env` is **git-ignored** and must be created locally — `npm run setup` copies it
+from [server/.env.example](server/.env.example), which ships with working local defaults
+(`mongodb://127.0.0.1:27017`, database `library`). Never commit a real Atlas credential.
+
+`server/src/load-env-vars.ts` resolves `.env` relative to itself (not the cwd) and the
+root `scripts/seed.mjs` reads the same file, so any entry point — `npm start`, nodemon,
+`node dist/server.js`, a debugger — picks up the same configuration.
 
 Constraints worth knowing before you debug a failure:
 

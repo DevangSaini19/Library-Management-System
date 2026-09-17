@@ -1,0 +1,10 @@
+{
+  // Extensions that make this repo nicer to work in. VS Code will offer to install them.
+  "recommendations": [
+    "mongodb.mongodb-vscode",
+    "angular.ng-template",
+    "dbaeumer.vscode-eslint",
+    "dsznajder.es7-react-js-snippets",
+    "editorconfig.editorconfig"
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  // Terminal > Run Task… (Ctrl+Shift+P → "Tasks: Run Task")
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "1. Setup — install deps + create server/.env",
+      "type": "shell",
+      "command": "npm run setup",
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": [],
+      "group": "none"
+    },
+    {
+      "label": "2. Database — start MongoDB (Docker)",
+      "type": "shell",
+      "command": "npm run db:start",
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": [],
+      "group": "none"
+    },
+    {
+      "label": "3. Database — load sample data",
+      "type": "shell",
+      "command": "npm run db:seed",
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": [],
+      "group": "none"
+    },
+    {
+      "label": "4. Run everything (API + client)",
+      "type": "shell",
+      "command": "npm run dev",
+      "options": { "cwd": "${workspaceFolder}" },
+      "isBackground": true,
+      "group": { "kind": "build", "isDefault": true },
+      "presentation": { "reveal": "always", "panel": "dedicated" },
+      "problemMatcher": {
+        "owner": "typescript",
+        "pattern": "$tsc",
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "(.*?)",
+          "endsPattern": "Server is running on port|webpack compiled successfully|Compiled successfully"
+        }
+      }
+    },
+    {
+      "label": "Lint + API tests",
+      "type": "shell",
+      "command": "npm run lint && npm test",
+      "options": { "cwd": "${workspaceFolder}" },
+      "group": "none",
+      "problemMatcher": []
+    },
+    {
+      "label": "Production build (server + client)",
+      "type": "shell",
+      "command": "npm run build",
+      "options": { "cwd": "${workspaceFolder}" },
+      "group": { "kind": "build" },
+      "problemMatcher": ["$tsc"]
+    }
+  ]
+}
